@@ -11,6 +11,10 @@ gem 'sqlite3'
 # Use Authentication solution.
 gem 'devise'
 
+# To use mongodb
+gem 'mongoid', '~> 4.0.0.beta1', github: 'mongoid/mongoid'
+gem 'bson_ext'
+
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
