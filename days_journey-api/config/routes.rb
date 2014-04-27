@@ -1,4 +1,10 @@
 DaysJourneyApi::Application.routes.draw do
+  
+
+  resources :destinations, except: [:new, :edit]
+  resources :paths, except: [:new, :edit]
+  devise_for :users
+  # for Sessions Controller.
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
