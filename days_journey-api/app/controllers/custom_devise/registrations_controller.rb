@@ -11,8 +11,7 @@ class CustomDevise::RegistrationsController < Devise::RegistrationsController
     build_resource(sign_up_params)
 
     resource_saved = resource.save
-    puts "is Saved??  #{resource_saved}"
-
+    
     yield resource if block_given?
     if resource_saved
       if resource.active_for_authentication?
@@ -49,7 +48,7 @@ class CustomDevise::RegistrationsController < Devise::RegistrationsController
   protected
 
   def sign_up_params
-    params.permit( :email, :password, :user_name)
+    params.require(:email).permit(:password, :user_name)
   end
 
   def account_update_params
