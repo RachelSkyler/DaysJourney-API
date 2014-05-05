@@ -58,7 +58,7 @@ class User
   has_many :paths, validate: false, inverse_of: :user
   
   # Fields that are required in order to have a valid user
-  #validates :email, :encrypted_password, :user_name, :sign_in_count, presence: true
+  validates :email, :encrypted_password, :user_name, :sign_in_count, presence: true
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
