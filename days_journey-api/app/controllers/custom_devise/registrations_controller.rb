@@ -16,14 +16,19 @@ class CustomDevise::RegistrationsController < Devise::RegistrationsController
     if resource_saved
       if resource.active_for_authentication?
         sign_up(resource_name, resource)
-        return render json: resource
+        return render json: {
+          result: 1,
+          user_id: resource.id
+        }
       else
         expire_data_after_sign_in!
         return render json: resource
       end
     else
       clean_up_passwords resource
-      return render json: resource
+      return render json: {
+        result: 0
+      }
     end
   end
 
