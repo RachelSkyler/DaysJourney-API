@@ -19,11 +19,11 @@ class CustomDevise::RegistrationsController < Devise::RegistrationsController
         return render json: resource
       else
         expire_data_after_sign_in!
-        respond_with json: resource
+        return render json: resource
       end
     else
       clean_up_passwords resource
-      respond_with resource
+      return render json: resource
     end
   end
 
@@ -48,7 +48,7 @@ class CustomDevise::RegistrationsController < Devise::RegistrationsController
   protected
 
   def sign_up_params
-    params.require(:email).permit(:password, :user_name)
+    params.permit(:email, :password, :user_name)
   end
 
   def account_update_params

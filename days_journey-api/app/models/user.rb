@@ -1,5 +1,6 @@
 class User 
-  
+  require 'digest/sha1'
+
   # For setting up mongoid to user model. 
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -64,5 +65,14 @@ class User
   # :confirmable, :lockable, :timeoutable and :omniauthable
 
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
+         :recoverable, :rememberable, :trackable, :validatable, pepper: "rachelskyler"
+
+  # Customise validate function. this method's logic is same with the origina but you can add log if you want.
+  # You must configure pepper hash.  
+  def valid_password?(password)
+      return false if encrypted_password.blank?
+      bcrypt   = ::BCrypt::Password.new(encrypted_password)
+      password = ::BCrypt::Engine.hash_secret("#{password}#{self.class.pepper}", bcrypt.salt)
+      Devise.secure_compare(password, encrypted_password)
+  end
 end
