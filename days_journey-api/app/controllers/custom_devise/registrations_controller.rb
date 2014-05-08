@@ -11,20 +11,24 @@ class CustomDevise::RegistrationsController < Devise::RegistrationsController
     build_resource(sign_up_params)
 
     resource_saved = resource.save
-    puts "is Saved??  #{resource_saved}"
-
+    
     yield resource if block_given?
     if resource_saved
       if resource.active_for_authentication?
         sign_up(resource_name, resource)
-        return render json: resource
+        return render json: {
+          result: 1,
+          user_id: resource.id
+        }
       else
         expire_data_after_sign_in!
-        respond_with json: resource
+        return render json: resource
       end
     else
       clean_up_passwords resource
-      respond_with resource
+      return render json: {
+        result: 0
+      }
     end
   end
 
@@ -49,7 +53,7 @@ class CustomDevise::RegistrationsController < Devise::RegistrationsController
   protected
 
   def sign_up_params
-    params.permit( :email, :password, :user_name)
+    params.permit(:email, :password, :user_name)
   end
 
   def account_update_params
