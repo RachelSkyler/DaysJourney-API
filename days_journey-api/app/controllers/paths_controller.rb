@@ -10,7 +10,8 @@ class PathsController < ApplicationController
   # GET /paths/1.json
   def show
     @path = Path.find(params[:id])
-
+    
+    
     render json: @path
   end
 

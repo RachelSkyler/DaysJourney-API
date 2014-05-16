@@ -11,15 +11,24 @@ class DestinationsController < ApplicationController
   def show
     @destination = Destination.find(params[:id])
 
-    render json: @destination
+    unless @destination.nil?
+      render json: {
+        result: 1,
+        destination: @destination 
+      }
+    else
+      render json: {
+        result: 0,
+        error: @destination.errors
+      }
+    end
   end
 
   # POST /paths/:path_id/destinations.json
   def create
     params = create_destination_params
     @path = Path.find(params[:path_id])
-    @destination =  Destination.new(create_destination_params)
-    puts "Destination : #{@destination}"
+    @destination =  Destination.new(params)
     @path.destinations << @destination
 
     if @destination.save
