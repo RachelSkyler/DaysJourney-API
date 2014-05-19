@@ -1,10 +1,23 @@
 DaysJourneyApi::Application.routes.draw do
   
 
-  resources :destinations, except: [:new, :edit]
-  resources :paths, except: [:new, :edit]
-  devise_for :users,
-              controllers: { registrations: "custom_devise/registrations", sessions: "custom_devise/sessions"} 
+  # For Registrations & Sessions Controller
+  devise_for :users, controllers: { registrations: "custom_devise/registrations", sessions: "custom_devise/sessions"}  
+
+  # Don't create any user_route and Create Nested routes for Paths#index, Paths#create
+  resources :users, only: [] do
+    resources :paths, only: [:index, :create]
+  end
+
+  # Create routes for Paths#show, Paths#update and Create Nested routes for Destinations#index, Destinations#create
+  resources :paths, only: [:show, :update] do 
+    resources :destinations, only: [:index, :create]
+  end
+
+  # For show, update method of the Destinations Controller 
+  resources :destinations, only: [:show, :update]
+
+  
   # for Sessions Controller.
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

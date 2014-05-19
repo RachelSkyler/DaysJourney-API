@@ -1,33 +1,40 @@
 class PathsController < ApplicationController
-  # GET /paths
-  # GET /paths.json
+
+  # GET /users/:user_id/paths.json
   def index
     @paths = Path.all
 
     render json: @paths
   end
 
-  # GET /paths/1
   # GET /paths/1.json
   def show
     @path = Path.find(params[:id])
-
+    
+    
     render json: @path
   end
 
-  # POST /paths
-  # POST /paths.json
+  # POST /users/:user_id/paths.json
   def create
-    @path = Path.new(params[:path])
+    @user = User.find(params[:user_id])
+    @path = Path.new()
+    @user.paths.push(@path)
 
     if @path.save
-      render json: @path, status: :created, location: @path
+      render json: {
+        result: 1,
+        path_id: @path.id,
+        created_at: @path.created_at
+      }
     else
-      render json: @path.errors, status: :unprocessable_entity
+      render json: {
+        result:0,
+        error: @path.errors
+      }
     end
   end
-
-  # PATCH/PUT /paths/1
+  
   # PATCH/PUT /paths/1.json
   def update
     @path = Path.find(params[:id])
