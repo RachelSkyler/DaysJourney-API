@@ -13,6 +13,7 @@ class CustomDevise::SessionsController < Devise::SessionsController
     return invalid_login_attempt unless resource
 
     if resource.valid_password?(params[:password])
+<<<<<<< HEAD
     	render json: { 
     		result: 1,
     		user_id: resource.id,
@@ -23,6 +24,14 @@ class CustomDevise::SessionsController < Devise::SessionsController
     		result: 0,
     		error: "Invalid passoword."
     	}
+=======
+        render json: { 
+        	result: 1,
+    			user_id: resource.id,
+    			encrypted_password: resource.encrypted_password
+    		}
+        return
+>>>>>>> 98a5f53799f13543d785b43f58fe204fe1eaa8a7
     end
 	end
  
@@ -42,7 +51,11 @@ class CustomDevise::SessionsController < Devise::SessionsController
 
   def invalid_login_attempt
     warden.custom_failure!
+<<<<<<< HEAD
     render json: { result: 0 ,error: ["Invalid email or password."] }
+=======
+    render json: { result: 0 ,errors: ["Invalid email or password."] }
+>>>>>>> 98a5f53799f13543d785b43f58fe204fe1eaa8a7
 	end
 
 	private 

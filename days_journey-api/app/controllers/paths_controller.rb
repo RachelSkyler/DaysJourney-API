@@ -34,7 +34,7 @@ class PathsController < ApplicationController
       }
     end
   end
-
+  
   # PATCH/PUT /paths/1.json
   def update
     @path = Path.find(params[:id])

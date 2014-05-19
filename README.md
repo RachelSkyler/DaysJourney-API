@@ -1,7 +1,11 @@
 DaysJourney-API
 ===============
 
+<<<<<<< HEAD
 This API is used by Day's Journey, Android App. 
+=======
+This API using Day's Journey, Android App. 
+>>>>>>> 98a5f53799f13543d785b43f58fe204fe1eaa8a7
 
 ##Information
 
