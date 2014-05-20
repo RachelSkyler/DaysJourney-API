@@ -18,7 +18,6 @@ class CustomDevise::RegistrationsController < Devise::RegistrationsController
         sign_up(resource_name, resource)
         return render json: {
           result: 1,
-<<<<<<< HEAD
           user_id: resource.id,
           encrypted_password: resource.encrypted_password
         }
@@ -28,23 +27,12 @@ class CustomDevise::RegistrationsController < Devise::RegistrationsController
           result: 0,
           error: "Fail Active authentication"
         }
-=======
-          user_id: resource.id
-        }
-      else
-        expire_data_after_sign_in!
-        return render json: resource
->>>>>>> 98a5f53799f13543d785b43f58fe204fe1eaa8a7
       end
     else
       clean_up_passwords resource
       return render json: {
-<<<<<<< HEAD
         result: 0,
         error: resource.errors
-=======
-        result: 0
->>>>>>> 98a5f53799f13543d785b43f58fe204fe1eaa8a7
       }
     end
   end
