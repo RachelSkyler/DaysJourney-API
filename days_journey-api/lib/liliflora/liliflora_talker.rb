@@ -11,6 +11,25 @@ module Liliflora
 
     VERSION = '0.1.0'
 
+    # Include sensor_type or data_collection_interval_type or retrieve_type
+    #
+    # SENSOR TYPE
+    #
+    # SENSOR_ALL = 'all', SENSOR_ANALOG_SOUND = 'analogsound', SENSOR_DUST = 'dust', SENSOR_FLAME = 'frame', SENSOR_HUMIDITY = 'humidity',
+    # SENSOR_LIGHT_BRIGHTNESS = 'lightbrightness', SENSOR_RAINDROP = 'raindrop', SENSOR_TEMPERATURE_CELSIUS = 'temperaturecelsius',
+    # SENSOR_TEMPERATURE_FAHRENHEIT = 'temperaturefahrenheit', SENSOR_ACCELEROMETER = 'accelerometer', SENSOR_TOUCH = 'touch',
+    # SENSOR_DIGITAL_TILT = 'digitaltilt', SENSOR_DIGITAL_VIBRATION = 'digitalvibration', SENSOR_INFRARED_MOTION = 'infraredmotion', 
+    #
+    #
+    # DATA CELLECTION INTERVAL TYPE
+    #
+    # DATA_COLLECTION_INTERVAL_REAL_TIME = 0, DATA_COLLECTION_INTERVAL_RAPID = 1, DATA_COLLECTION_INTERVAL_MEDIUM = 2
+    # DATA_COLLECTION_INTERVAL_SLOW = 3, DATA_COLLECTION_INTERVAL_SINGLE = 4
+    #
+    # RETRIEVE TYPE
+    # 
+    # RETRIEVE_ALL = 'all', RETRIEVE_LATEST = 'latest'
+
     # Creating a new Instance of LilifloraTalker::Engine.
     #
     # lf_talker = LilifloraTalker.new()
@@ -24,7 +43,7 @@ module Liliflora
       PORT = 80
       SECURE = true
       # TODO: Think about that Default args or options.
-      DEFAULT_OPTIONS = { arduino_serial_key: nil, arduino_kit_version: nil, debug:false, headers: {}}
+      DEFAULT_OPTIONS = { arduino_serial_key: nil, arduino_kit_version: nil, debug:false,headers: {}}
 
       def initialize(options={})
         @options = DEFAULT_OPTIONS.merge(options)
@@ -56,14 +75,16 @@ module Liliflora
       # This is the method that send the actual request to get data.
       # 
       # usage.
-      # lf = LilifloraTalker.new({ arduino_serial_key: 10493056, arduino_kit_version: :temperature_light})
+      # lf = LilifloraTalker.new({ arduino_device_id: 10493056, password: 'dddsfs'})
       # lf.get({ type: 'retrive',
-      #          place: 'inside',
-      #          datatype: 'all'})
+      #          device_id: 'potato',
+      #          sensot_type: LilifloraTalker::TYPE_ALL,
+      #          retrieve_type: LilifloraTalker::RETRIEVE_ALL })
       #
-      # lf.get({ type: 'retrive',
-      #          place: 'outside',
-      #          datatype: 'latest'})
+      # lf.get({ type: 'collect',
+      #          device_id: 'rachel',
+      #          sensot_type: LilifloraTalker::TYPE_ALL,
+      #          data_collection_interval_type: LilifloraTalker::DATA_COLLECTION_INTERVAL_REAL_TIME})
       #
       # input
       # You can specify what is your purpose, where get the data and the data-type whether all of data or latest.
@@ -96,23 +117,43 @@ module Liliflora
 
       def results(args={})
         header = 0
-        results = nil
+        result_url = nil
 
-        result_url = build_url(args)
-
+        if args[type] == 'retrieve'
+          result_url = build_retrieve_url(args)
+        else
+          result_url = build_collect_url(args)
+        end
+        
         data = do_http_get(result_url)
 
         return data unless data.nil?
       end
 
-      # Create a valid URL for Sensor data processing API.
-      def build_url(args)
+      # Create a valid URL for Sensor data processing API.:
+      #
+      # build_retrieve_url
+      # build_collect_url
+
+      def build_retrieve_url(args)
         url_type = args[type]
-        url_place = args[place]
-        url_datatype = args[datatype]
+        url_device_id = args[device_id]
+        url_sensor_type = args[sensot_type]
+        url_retrieve_type = args[retrieve_type]
 
-        complete_url = "/#{url_type}/#{url_place}/#{url_datatype}"
+        complete_url = "/data/#{url_type}/#{url_device_id}/#{url_sensor_type}/#{url_retrieve_type}"
 
+        return complete_url
+      end
+
+      def build_collect_url(args)
+        url_type = args[type]
+        url_device_id = args[device_id]
+        url_sensor_type = args[sensot_type]
+        url_data_collection_interval_type = args[data_collection_interval_type]
+
+        complete_url = "/data/#{url_type}/#{url_device_id}/#{url_sensor_type}/#{url_data_collection_interval_type}"
+        
         return complete_url
       end
     end
