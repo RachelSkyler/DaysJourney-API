@@ -26,17 +26,19 @@ class DestinationsController < ApplicationController
 
   def home
     sign_in_user = User.find(params[:user_id])
-    destinations = sign_in_user.paths.first.destinations
+    today_path = sign_in_user.paths.first
+    destinations = today_path.destinations
     home_index = destinations.index {|destination| destination.is_home == "true" }
 
     @home = destinations[home_index]
-
+    puts "Home ID = #{@home.id} Home description = #{@home.description}"
     unless @home.nil? 
       render json: {
         result: 1,
+        path_id: today_path.id,
         destination_id: @home.id,
         description: @home.description,
-        reference: @home.refenence,
+        reference: @home.reference,
         latitude: @home.latitude,
         longitude: @home.longitude
       }
@@ -53,7 +55,6 @@ class DestinationsController < ApplicationController
     params = create_destination_params
     @path = Path.find(params[:path_id])
     @destination =  Destination.new(params)
-    puts "is_home value of the destination : #{@destination.is_home} & #{params[:is_home]}"
     @path.destinations << @destination
 
     if @destination.save
@@ -73,10 +74,16 @@ class DestinationsController < ApplicationController
   def update
     @destination = Destination.find(params[:id])
 
-    if @destination.update(params[:destination])
-      head :no_content
+    if @destination.update(update_destination_params)
+      render json: {
+        result: 1,
+        destination_id: @destination.id
+      }
     else
-      render json: @destination.errors, status: :unprocessable_entity
+      render json: {
+        result: 0,
+        error: @description.errors
+      }
     end
   end
 
@@ -91,6 +98,10 @@ class DestinationsController < ApplicationController
   private
 
   def create_destination_params
-    params.permit(:is_home, :path_id, :location_name, :description, :latitude, :longitude, :refenence)
+    params.permit(:is_home, :path_id, :location_name, :description, :latitude, :longitude, :reference)
+  end
+
+  def update_destination_params
+    params.permit(:is_home, :location_name, :description, :latitude, :longitude, :reference)
   end
 end

@@ -4,7 +4,7 @@ class Destination
 
   # latitude : 위도, longitude : 경도 
   field :description, type: String, default: ""
-  field :refenence, type: String
+  field :reference, type: String
   field :location_name, type: String
   field :latitude, type: String
   field :longitude, type: String
