@@ -17,7 +17,9 @@ DaysJourneyApi::Application.routes.draw do
   # For show, update method of the Destinations Controller 
   resources :destinations, only: [:show, :update]
 
-  
+  # For customr routes
+  get 'destinations/:user_id/home' => 'destinations#home', as: :user_home
+
   # for Sessions Controller.
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

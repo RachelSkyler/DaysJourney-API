@@ -8,7 +8,7 @@ class Destination
   field :location_name, type: String
   field :latitude, type: String
   field :longitude, type: String
-  field :is_home, type: Boolean, default: false
+  field :is_home, type: String, default: "false"
 
   # Bi-directional relations with Path.
   belongs_to :path, inverse_of: :destinations
