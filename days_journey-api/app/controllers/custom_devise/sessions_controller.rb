@@ -10,9 +10,12 @@ class CustomDevise::SessionsController < Devise::SessionsController
 		build_resource 
 
     resource = User.find_for_database_authentication(email: params[:email])
-    return invalid_login_attempt unless resource
+    return invalid_login_attempt unless resource || resource.valid_password?(params[:password])
+    
+    result = nil
+    result = Path.new_today_path(resource.id) unless Path.has_today_path?(resource.id)
 
-    if resource.valid_password?(params[:password])
+    if result[:path].save && result[:path].destinations[0].save
     	render json: { 
     		result: 1,
     		user_id: resource.id,
@@ -37,15 +40,15 @@ class CustomDevise::SessionsController < Devise::SessionsController
 	protected
 
 	def sign_in_params
-    params.permit(:email, :password)
+      params.permit(:email, :password)
   end
 
   def invalid_login_attempt
-    warden.custom_failure!
-    render json: { 
-    	result: 0,
-    	error: ["Invalid email or password."] 
-    }
+      warden.custom_failure!
+      render json: { 
+    	 result: 0,
+    	 error: ["Invalid email or password."] 
+      }
 	end
 
 	private 
