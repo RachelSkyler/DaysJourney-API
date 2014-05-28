@@ -22,10 +22,8 @@ class Path
     else
       new_home = get_new_home(new_path, homes)
     end
-    puts "new_home : #{new_home}"
 
     unless new_home.nil? 
-      puts "new_home : #{new_home}"
       new_path.destinations.push(new_home)
       
       result = {path: new_path}
@@ -36,18 +34,20 @@ class Path
 
   def self.has_today_path?(user_id)
     today = get_today
-    latest_path = Path.last.created_at
-    result = true 
+    latest_path = Path.where(user_id: user_id).last
+    latest_created_at = latest_path.created_at
+    result = {is_created_at_today: true, path: latest_path}
 
     today_info = [today[:day], today[:month], today[:year]]
     today_info.each do |e| 
-      flag = [latest_path.day, latest_path.month, latest_path.year].include? (e) 
-      unless flag
-        result = false
+      is_include = [latest_created_at.day, latest_created_at.month, latest_created_at.year].include? (e) 
+      unless is_include
+        result[:is_created_at_today] = false
+        result[:path] = nil
         break
       end
-    end   
-
+    end
+    
     result 
   end
 
