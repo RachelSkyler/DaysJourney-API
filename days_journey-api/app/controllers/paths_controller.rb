@@ -11,16 +11,36 @@ class PathsController < ApplicationController
   def show
     @path = Path.find(params[:id])
     
+    puts "created_at #{@path.created_at}"
+
+    if @path.nil?
+      render json: {
+        result: 1,
+        path_id: @path.id,
+        created_at: @path.created_at
+      }
+    else
+      render json: {
+        result: 0,
+        error: @path.errors
+      }
+    end
+  end
+
+  # GET /paths/todaypath/1.json
+  def today_path
     
-    render json: @path
   end
 
   # POST /users/:user_id/paths.json
   def create
     @user = User.find(params[:user_id])
-    @path = Path.new()
-    @user.paths.push(@path)
+    result = Path.new_today_path(params[:user_id])
+    @path = result[:path]
 
+    @user.paths.push(@path) unless @path.nil?
+    
+    puts "created_at #{@path.created_at}"
     if @path.save
       render json: {
         result: 1,
